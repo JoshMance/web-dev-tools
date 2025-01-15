@@ -2,9 +2,9 @@ const showButton = document.getElementById("showButton");
 
 // Sends a request to the background script
 // Returns a promise that resolves with the response info
-function msgBackground(action) {
+function getDataFromBackground(request) {
     return new Promise((resolve, reject) => {
-        chrome.runtime.sendMessage({action: action}, (response) => {
+        chrome.runtime.sendMessage({request: request}, (response) => {
             if (chrome.runtime.lastError) {
                 reject(chrome.runtime.lastError);
             } else {
@@ -16,15 +16,13 @@ function msgBackground(action) {
 
 // Sends a request to the content script
 // Returns a promise that resolves with the response info
-function msgContent(action) {
+function getDataFromContent(request) {
     return new Promise((resolve, reject) => {
         chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
-            chrome.tabs.sendMessage(tabs[0].id, {action: action}, (response) => {
+            chrome.tabs.sendMessage(tabs[0].id, {request: request}, (response) => {
                 if (chrome.runtime.lastError) {
-                    alert(chrome.runtime.lastError.message);
                     reject(chrome.runtime.lastError);
                 } else {
-                    alert(response.data);
                     resolve(response.data);
                 }
             });
@@ -36,8 +34,8 @@ function msgContent(action) {
 async function handleShowButton() {
     try {
         // Requests a handshake with the background script
-        // const data = await msgBackground("handshake");
-        const data = await msgContent("handshake");
+        // const data = await getDataFromBackground("handshake");
+        const data = await getDataFromContent("getAllNodes");
 
         if (data) {
             const displayPanel = document.getElementById("displayPanel");

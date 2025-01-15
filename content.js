@@ -1,7 +1,22 @@
-chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
-    console.log("Content script received message:", message);
-    if (message.action === "handshake") {
-        sendResponse({data: "This is data from the content script"});
+function getNodeInfo(node) {
+    return node.tagName;
+}
+
+// Returns an array of all child nodes for the input node
+function getChildren(node) {
+    if (node && node.hasChildNodes()) {
+        return Array.from(node.children);
+    } else {
+        return [];
+    }
+}
+
+chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {    
+    if (message.request === "getAllNodes") {
+        const root = document.documentElement;
+
+        alert(getChildren(root));
+        sendResponse({data: getNodeInfo(root)});
     }
     return true; // This ensures an asynchronous response
 });

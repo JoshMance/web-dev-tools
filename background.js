@@ -1,7 +1,7 @@
 // Listen for messages sent from the popup script, and runs functions to get the requested data
 chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
-    if (message.action === "handshake") {
+    if (message.request === "handshake") {
         // Send a response back to the popup
 
         // const root = document.documentElement;
