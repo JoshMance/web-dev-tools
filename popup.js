@@ -2,14 +2,32 @@ const showButton = document.getElementById("showButton");
 
 // Sends a request to the background script
 // Returns a promise that resolves with the response info
-function sendToBackground(action) {
+function msgBackground(action) {
     return new Promise((resolve, reject) => {
-        chrome.runtime.sendMessage({ action: action }, (response) => {
+        chrome.runtime.sendMessage({action: action}, (response) => {
             if (chrome.runtime.lastError) {
                 reject(chrome.runtime.lastError);
             } else {
-                resolve(response.info);
+                resolve(response.data);
             }
+        });
+    });
+}
+
+// Sends a request to the content script
+// Returns a promise that resolves with the response info
+function msgContent(action) {
+    return new Promise((resolve, reject) => {
+        chrome.tabs.query({active: true, currentWindow: true}, (tabs) => {
+            chrome.tabs.sendMessage(tabs[0].id, {action: action}, (response) => {
+                if (chrome.runtime.lastError) {
+                    alert(chrome.runtime.lastError.message);
+                    reject(chrome.runtime.lastError);
+                } else {
+                    alert(response.data);
+                    resolve(response.data);
+                }
+            });
         });
     });
 }
@@ -18,11 +36,12 @@ function sendToBackground(action) {
 async function handleShowButton() {
     try {
         // Requests a handshake with the background script
-        const info = await sendToBackground("handshake");
+        // const data = await msgBackground("handshake");
+        const data = await msgContent("handshake");
 
-        if (info) {
+        if (data) {
             const displayPanel = document.getElementById("displayPanel");
-            displayPanel.textContent = info;
+            displayPanel.textContent = data;
         } else {
             console.log("Error: No response received");
         }
@@ -32,4 +51,4 @@ async function handleShowButton() {
 }
 
 // Setting all button event listeners
-showButton.addEventListener("mousedown", handleShowButton);
+showButton.addEventListener("click", handleShowButton);

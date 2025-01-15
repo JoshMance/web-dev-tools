@@ -3,9 +3,11 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
 
     if (message.action === "handshake") {
         // Send a response back to the popup
-        sendResponse({ info: "Hello from background!"});
+
+        // const root = document.documentElement;
+        sendResponse({data: "Hi"});
     }
 
-    // Returning true indicates that the response is being handled asynchronously
+    // Indicates that the response is asynchronous
     return true;
 });
