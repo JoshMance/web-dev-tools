@@ -5,7 +5,7 @@ chrome.runtime.onMessage.addListener((message, sender, sendResponse) => {
         // Send a response back to the popup
 
         // const root = document.documentElement;
-        sendResponse({data: "Hi"});
+        sendResponse({data: "Hello from the background script!"});
     }
 
     // Indicates that the response is asynchronous

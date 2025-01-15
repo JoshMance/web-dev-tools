@@ -38,8 +38,8 @@ async function handleShowButton() {
         const data = await getDataFromContent("getAllNodes");
 
         if (data) {
-            const displayPanel = document.getElementById("displayPanel");
-            displayPanel.textContent = data;
+            const chart = document.getElementById("chart");
+            chart.textContent = data;
         } else {
             console.log("Error: No response received");
         }
