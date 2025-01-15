@@ -1,20 +1,35 @@
 const showButton = document.getElementById("showButton");
 
-// Reloads the DOM tree visual
-function handleShowButton() {
-
-    // Requests the background script to get the the root node's info
-    chrome.runtime.sendMessage({action: "getRoot"}, (response) => {
-
-        // Handles the response from the background script.
-        // Outputs the returned info the to display panel.
-        const displayPanel = document.getElementById("displayPanel");
-        if (response && response.info) {
-            displayPanel.textContent = response.info;
-        } else {
-            displayPanel.textContent = "No response received";
-        }
+// Sends a request to the background script
+// Returns a promise that resolves with the response info
+function sendToBackground(action) {
+    return new Promise((resolve, reject) => {
+        chrome.runtime.sendMessage({ action: action }, (response) => {
+            if (chrome.runtime.lastError) {
+                reject(chrome.runtime.lastError);
+            } else {
+                resolve(response.info);
+            }
+        });
     });
 }
 
+// Reloads the DOM tree visual
+async function handleShowButton() {
+    try {
+        // Requests a handshake with the background script
+        const info = await sendToBackground("handshake");
+
+        if (info) {
+            const displayPanel = document.getElementById("displayPanel");
+            displayPanel.textContent = info;
+        } else {
+            console.log("Error: No response received");
+        }
+    } catch (error) {
+        console.log("Error: ", error);
+    }
+}
+
+// Setting all button event listeners
 showButton.addEventListener("mousedown", handleShowButton);
