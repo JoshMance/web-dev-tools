@@ -1,0 +1,24 @@
+{
+    "name": "TreeView",
+    "description": "Extension that allows users to intereact with a visual model of a website's Document Object Model (DOM) tree.",
+    "permissions": [
+        "activeTab", 
+        "scripting",
+        "storage"
+    ],
+    "background": {
+        "service_worker": "background.js"
+      },
+    "content_scripts": [
+        {
+        "matches": ["<all_urls>"],
+        "js": ["content.js"]
+        }
+    ],
+    "version": "1.0",
+    "manifest_version": 3,
+    "action": {
+      "default_popup": "main.html",
+      "default_icon": "icon.png"
+    }
+  }
